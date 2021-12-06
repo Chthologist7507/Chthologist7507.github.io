@@ -1,0 +1,90 @@
+//P5073 [Ynoi2015] 世上最幸福的女孩
+//CaO，信仰题~~卡常题~~ 
+#include<bits/stdc++.h>
+#define in inline
+namespace IO{
+	const int SIZE=1<<21;
+	static char ibuf[SIZE],obuf[SIZE],*iS,*iT,*oS=obuf,*oT=oS+SIZE-1;
+    int qr;
+    char qu[55],c;
+    bool f;
+	#define getchar() (IO::iS==IO::iT?(IO::iT=(IO::iS=IO::ibuf)+fread(IO::ibuf,1,IO::SIZE,stdin),(IO::iS==IO::iT?EOF:*IO::iS++)):*IO::iS++)
+	#define putchar(x) *IO::oS++=x,IO::oS==IO::oT?flush():0
+	#define flush() fwrite(IO::obuf,1,IO::oS-IO::obuf,stdout),IO::oS=IO::obuf
+	#define puts(x) IO::Puts(x)
+	template<typename T>
+    in void read(T&x){
+    	for(f=1,c=getchar();c<48||c>57;c=getchar())f^=c=='-';
+    	for(x=0;c<=57&&c>=48;c=getchar()) x=(x<<1)+(x<<3)+(c&15);
+    	x=f?x:-x;
+    }
+    template<typename T>
+    in void write(T x){
+        if(!x) putchar(48); if(x<0) putchar('-'),x=-x;
+        while(x) qu[++qr]=x%10^48,x/=10;
+        while(qr) putchar(qu[qr--]);
+    }
+    template<typename T>
+    in void writeln(T x){
+        if(!x) putchar(48); if(x<0) putchar('-'),x=-x;
+        while(x) qu[++qr]=x%10^48,x/=10;
+        while(qr) putchar(qu[qr--]);
+        putchar('\n');
+	}
+    in void Puts(const char*s){
+    	for(int i=0;s[i];i++)
+			putchar(s[i]);
+		putchar('\n');
+	}
+	struct Flusher_{~Flusher_(){flush();}}io_flusher_;
+}
+using IO::read;//read(x)
+using IO::write;
+using IO::writeln;//\n
+//-----------------FASTIO-----------------
+const int maxN=3e5+10;
+in int maxx(int x,int y){return x>y ? x : y ;}
+int tree[maxN<<2],lazy[maxN<<2],n,m;
+#define ls k<<1
+#define rs k<<1|1
+#define mid (l+r>>1) 
+in void build(int k,int l,int r){
+	if(l==r){
+		read(tree[k]);
+		return ;
+	}
+	build(ls,l,mid);
+	build(rs,mid+1,r);
+	tree[k]=tree[ls]+tree[rs];
+}
+in void pushdown(int k,int l,int r){
+	if(!lazy[k])return ;
+	lazy[ls]+=lazy[k];
+	lazy[rs]+=lazy[k];
+	tree[ls]+=(mid-l+1)*lazy[k];
+	tree[rs]+=(r-mid)*lazy[k];
+	lazy[k]=0;
+}
+in int query(int k,int l,int r,int x,int y){
+	if(x>r||y<l)return 0;
+	if(x<=l&&y>=r)return tree[k];
+	pushdown(k,l,r);
+	return query(ls,l,mid,x,y)+query(rs,mid+1,r,x,y);
+}
+in void update(int k,int l,int r,int x,int y,int v){
+	if(x>r||y<l)return ;
+	if(x<=l&&y>=r){
+		tree[k]+=(r-l+1)*v;
+		lazy[k]+=v;
+		return ;
+	}
+	pushdown(k,l,r);
+	update(ls,l,mid,x,y,v);
+	update(rs,mid+1,r,x,y,v);
+	tree[k]=tree[ls]+tree[rs];
+}
+//linetree
+using namespace std;
+int main(){
+	return 0;
+}
